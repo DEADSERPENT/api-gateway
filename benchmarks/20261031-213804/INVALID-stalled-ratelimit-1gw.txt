@@ -1,0 +1,105 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+     execution: local
+        script: /work/load/rate-limit.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 200 max VUs, 50s max duration (incl. graceful stop):
+              * burst: 100.00 iterations/s for 20s (maxVUs: 50-200, gracefulStop: 30s)
+
+
+running (01.0s), 000/050 VUs, 100 complete and 0 interrupted iterations
+burst   [   5% ] 000/050 VUs  01.0s/20s  100.00 iters/s
+
+running (02.0s), 000/050 VUs, 200 complete and 0 interrupted iterations
+burst   [  10% ] 000/050 VUs  02.0s/20s  100.00 iters/s
+
+running (03.0s), 000/050 VUs, 300 complete and 0 interrupted iterations
+burst   [  15% ] 000/050 VUs  03.0s/20s  100.00 iters/s
+
+running (04.0s), 000/050 VUs, 400 complete and 0 interrupted iterations
+burst   [  20% ] 000/050 VUs  04.0s/20s  100.00 iters/s
+
+running (05.0s), 000/050 VUs, 500 complete and 0 interrupted iterations
+burst   [  25% ] 000/050 VUs  05.0s/20s  100.00 iters/s
+
+running (06.0s), 052/052 VUs, 546 complete and 0 interrupted iterations
+burst   [  30% ] 052/052 VUs  06.0s/20s  100.00 iters/s
+
+running (07.0s), 001/054 VUs, 695 complete and 0 interrupted iterations
+burst   [  35% ] 001/054 VUs  07.0s/20s  100.00 iters/s
+
+running (08.0s), 001/054 VUs, 795 complete and 0 interrupted iterations
+burst   [  40% ] 001/054 VUs  08.0s/20s  100.00 iters/s
+
+running (09.0s), 000/054 VUs, 896 complete and 0 interrupted iterations
+burst   [  45% ] 000/054 VUs  09.0s/20s  100.00 iters/s
+
+running (10.0s), 000/054 VUs, 996 complete and 0 interrupted iterations
+burst   [  50% ] 000/054 VUs  10.0s/20s  100.00 iters/s
+
+running (11.0s), 001/054 VUs, 1095 complete and 0 interrupted iterations
+burst   [  55% ] 001/054 VUs  11.0s/20s  100.00 iters/s
+
+running (45m50.4s), 001/054 VUs, 1195 complete and 0 interrupted iterations
+burst   [  60% ] 001/054 VUs  12.0s/20s  100.00 iters/s
+
+running (45m51.4s), 003/054 VUs, 1293 complete and 0 interrupted iterations
+burst   [  65% ] 003/054 VUs  13.0s/20s  100.00 iters/s
+
+running (45m52.4s), 001/054 VUs, 1395 complete and 0 interrupted iterations
+burst   [  70% ] 001/054 VUs  14.0s/20s  100.00 iters/s
+
+running (45m53.4s), 001/054 VUs, 1495 complete and 0 interrupted iterations
+burst   [  75% ] 001/054 VUs  15.0s/20s  100.00 iters/s
+
+running (45m54.4s), 001/054 VUs, 1595 complete and 0 interrupted iterations
+burst   [  80% ] 001/054 VUs  16.0s/20s  100.00 iters/s
+
+running (45m55.4s), 000/054 VUs, 1696 complete and 0 interrupted iterations
+burst   [  85% ] 000/054 VUs  17.0s/20s  100.00 iters/s
+
+running (45m56.4s), 000/054 VUs, 1796 complete and 0 interrupted iterations
+burst   [  90% ] 000/054 VUs  18.0s/20s  100.00 iters/s
+
+running (45m57.4s), 000/054 VUs, 1896 complete and 0 interrupted iterations
+burst   [  95% ] 000/054 VUs  19.0s/20s  100.00 iters/s
+
+running (45m58.4s), 000/054 VUs, 1996 complete and 0 interrupted iterations
+burst   [ 100% ] 000/054 VUs  20.0s/20s  100.00 iters/s
+
+
+  █ TOTAL RESULTS 
+
+    CUSTOM
+    rl_allowed..............................................................: 400    0.14501/s
+    rl_limited..............................................................: 1593   0.577503/s
+    rl_other................................................................: 4      0.00145/s
+
+    HTTP
+    http_req_duration.......................................................: avg=16.8ms  med=2.52ms p(95)=29.7ms  p(99)=473.85ms max=638.96ms
+      { expected_response:true }............................................: avg=13.15ms med=3.75ms p(95)=25.41ms p(99)=166.8ms  max=638.96ms
+    http_req_failed.........................................................: 79.96% 1597 out of 1997
+    http_reqs...............................................................: 1997   0.723963/s
+
+    EXECUTION
+    dropped_iterations......................................................: 4      0.00145/s
+    iteration_duration......................................................: avg=17.1ms  med=2.79ms p(95)=30.22ms p(99)=474.66ms max=640ms   
+    iterations..............................................................: 1997   0.723963/s
+    vus.....................................................................: 0      min=0            max=52
+    vus_max.................................................................: 54     min=50           max=54
+
+    NETWORK
+    data_received...........................................................: 897 kB 325 B/s
+    data_sent...............................................................: 1.2 MB 439 B/s
+
+
+
+
+running (45m58.4s), 000/054 VUs, 1997 complete and 0 interrupted iterations
+burst ✓ [ 100% ] 000/054 VUs  20s  100.00 iters/s

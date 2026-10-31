@@ -1,0 +1,5 @@
+=== 1. Baseline: one gateway, healthy upstream, quota not limiting
+=== 2. Baseline: two gateways, 100 VUs
+=== 3. Rate-limit accuracy: capacity 100, refill 10/s, 100 req/s for 20s
+=== 4. Downstream failure and recovery (breaker cooldown 3s)
+WARNING: ratelimit-1gw took 2758.4s (expected ~20s): host stalled, DISCARD this result and rerun

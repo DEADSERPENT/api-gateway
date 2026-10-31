@@ -1,0 +1,53 @@
+services:
+  redis:
+    image: redis:7.4-alpine
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+
+  service-a:
+    build: .
+    command: ["node", "dist/services/service-a/index.js"]
+    ports:
+      - "127.0.0.1:4001:4001"
+
+  service-b:
+    build: .
+    command: ["node", "dist/services/service-b/index.js"]
+    ports:
+      - "127.0.0.1:4002:4002"
+
+  # Two replicas sharing only Redis, to demonstrate the distributed quota.
+  gateway-1: &gateway
+    build: .
+    depends_on:
+      redis: { condition: service_healthy }
+      service-a: { condition: service_started }
+      service-b: { condition: service_started }
+    env_file: .dev/gateway.env
+    environment: &gateway-env
+      PORT: "3000"
+      SERVICE_A_URL: http://service-a:4001
+      SERVICE_B_URL: http://service-b:4002
+      REDIS_URL: redis://redis:6379
+      RATE_LIMIT_CAPACITY: ${RATE_LIMIT_CAPACITY:-10}
+      RATE_LIMIT_REFILL_PER_SEC: ${RATE_LIMIT_REFILL_PER_SEC:-1}
+      RATE_LIMIT_FAIL_POLICY: ${RATE_LIMIT_FAIL_POLICY:-closed}
+      UPSTREAM_TIMEOUT_MS: ${UPSTREAM_TIMEOUT_MS:-1000}
+      BREAKER_COOLDOWN_MS: ${BREAKER_COOLDOWN_MS:-3000}
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health/ready').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    ports:
+      - "127.0.0.1:3001:3000"
+
+  gateway-2:
+    <<: *gateway
+    ports:
+      - "127.0.0.1:3002:3000"
