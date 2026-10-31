@@ -1,0 +1,146 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+     execution: local
+        script: /work/load/baseline.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 100 max VUs, 1m0s max duration (incl. graceful stop):
+              * steady: 100 looping VUs for 30s (gracefulStop: 30s)
+
+time="2026-10-31T17:29:48Z" level=info msg="SLOW gw=gateway-1 total=503ms waiting=503ms connecting=0ms t=0.6s" source=console
+time="2026-10-31T17:29:48Z" level=info msg="SLOW gw=gateway-1 total=513ms waiting=512ms connecting=0ms t=0.6s" source=console
+time="2026-10-31T17:29:48Z" level=info msg="SLOW gw=gateway-1 total=536ms waiting=535ms connecting=0ms t=0.6s" source=console
+time="2026-10-31T17:29:48Z" level=info msg="SLOW gw=gateway-1 total=539ms waiting=539ms connecting=0ms t=0.6s" source=console
+
+running (0m01.0s), 100/100 VUs, 1879 complete and 0 interrupted iterations
+steady   [   3% ] 100 VUs  01.0s/30s
+
+running (0m02.0s), 100/100 VUs, 3578 complete and 0 interrupted iterations
+steady   [   7% ] 100 VUs  02.0s/30s
+
+running (0m03.0s), 100/100 VUs, 5437 complete and 0 interrupted iterations
+steady   [  10% ] 100 VUs  03.0s/30s
+
+running (0m04.0s), 100/100 VUs, 7495 complete and 0 interrupted iterations
+steady   [  13% ] 100 VUs  04.0s/30s
+
+running (0m05.0s), 100/100 VUs, 9578 complete and 0 interrupted iterations
+steady   [  17% ] 100 VUs  05.0s/30s
+
+running (0m06.0s), 100/100 VUs, 11635 complete and 0 interrupted iterations
+steady   [  20% ] 100 VUs  06.0s/30s
+
+running (0m07.0s), 100/100 VUs, 13678 complete and 0 interrupted iterations
+steady   [  23% ] 100 VUs  07.0s/30s
+
+running (0m08.0s), 100/100 VUs, 15745 complete and 0 interrupted iterations
+steady   [  27% ] 100 VUs  08.0s/30s
+
+running (0m09.0s), 100/100 VUs, 17798 complete and 0 interrupted iterations
+steady   [  30% ] 100 VUs  09.0s/30s
+
+running (0m10.0s), 100/100 VUs, 19834 complete and 0 interrupted iterations
+steady   [  33% ] 100 VUs  10.0s/30s
+
+running (0m11.0s), 100/100 VUs, 21888 complete and 0 interrupted iterations
+steady   [  37% ] 100 VUs  11.0s/30s
+
+running (0m12.0s), 100/100 VUs, 23854 complete and 0 interrupted iterations
+steady   [  40% ] 100 VUs  12.0s/30s
+
+running (0m13.0s), 100/100 VUs, 25934 complete and 0 interrupted iterations
+steady   [  43% ] 100 VUs  13.0s/30s
+
+running (0m14.0s), 100/100 VUs, 28034 complete and 0 interrupted iterations
+steady   [  47% ] 100 VUs  14.0s/30s
+
+running (0m15.0s), 100/100 VUs, 29967 complete and 0 interrupted iterations
+steady   [  50% ] 100 VUs  15.0s/30s
+
+running (0m16.0s), 100/100 VUs, 32167 complete and 0 interrupted iterations
+steady   [  53% ] 100 VUs  16.0s/30s
+
+running (0m17.0s), 100/100 VUs, 34181 complete and 0 interrupted iterations
+steady   [  57% ] 100 VUs  17.0s/30s
+
+running (0m18.0s), 100/100 VUs, 36298 complete and 0 interrupted iterations
+steady   [  60% ] 100 VUs  18.0s/30s
+
+running (0m19.0s), 100/100 VUs, 38298 complete and 0 interrupted iterations
+steady   [  63% ] 100 VUs  19.0s/30s
+
+running (0m20.0s), 100/100 VUs, 40365 complete and 0 interrupted iterations
+steady   [  67% ] 100 VUs  20.0s/30s
+
+running (0m21.0s), 100/100 VUs, 42368 complete and 0 interrupted iterations
+steady   [  70% ] 100 VUs  21.0s/30s
+
+running (0m22.0s), 100/100 VUs, 44456 complete and 0 interrupted iterations
+steady   [  73% ] 100 VUs  22.0s/30s
+
+running (0m23.0s), 100/100 VUs, 46431 complete and 0 interrupted iterations
+steady   [  77% ] 100 VUs  23.0s/30s
+
+running (0m24.0s), 100/100 VUs, 48656 complete and 0 interrupted iterations
+steady   [  80% ] 100 VUs  24.0s/30s
+
+running (0m25.0s), 100/100 VUs, 50556 complete and 0 interrupted iterations
+steady   [  83% ] 100 VUs  25.0s/30s
+
+running (0m26.0s), 100/100 VUs, 52672 complete and 0 interrupted iterations
+steady   [  87% ] 100 VUs  26.0s/30s
+
+running (0m27.0s), 100/100 VUs, 54757 complete and 0 interrupted iterations
+steady   [  90% ] 100 VUs  27.0s/30s
+
+running (0m28.0s), 100/100 VUs, 56298 complete and 0 interrupted iterations
+steady   [  93% ] 100 VUs  28.0s/30s
+
+running (0m29.0s), 100/100 VUs, 58198 complete and 0 interrupted iterations
+steady   [  97% ] 100 VUs  29.0s/30s
+
+running (0m30.0s), 100/100 VUs, 60298 complete and 0 interrupted iterations
+steady   [ 100% ] 100 VUs  30.0s/30s
+
+
+  █ THRESHOLDS 
+
+    http_req_duration{gw:gateway-1}
+    ✓ 'max>=0' max=539.06ms
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......................: 60424   2012.351168/s
+    checks_succeeded...................: 100.00% 60424 out of 60424
+    checks_failed......................: 0.00%   0 out of 60424
+
+    ✓ status is 200
+
+    HTTP
+    http_req_duration.......................................................: avg=49.52ms min=12.03ms med=47.64ms p(90)=58.41ms p(95)=62.91ms p(99)=73.59ms max=539.06ms
+      { expected_response:true }............................................: avg=49.52ms min=12.03ms med=47.64ms p(90)=58.41ms p(95)=62.91ms p(99)=73.59ms max=539.06ms
+      { gw:gateway-1 }......................................................: avg=49.52ms min=12.03ms med=47.64ms p(90)=58.41ms p(95)=62.91ms p(99)=73.59ms max=539.06ms
+    http_req_failed.........................................................: 0.00% 0 out of 60424
+    http_reqs...............................................................: 60424 2012.351168/s
+
+    EXECUTION
+    iteration_duration......................................................: avg=49.64ms min=12.15ms med=47.73ms p(90)=58.53ms p(95)=63.05ms p(99)=73.7ms  max=591.7ms 
+    iterations..............................................................: 60424 2012.351168/s
+    vus.....................................................................: 100   min=100        max=100
+    vus_max.................................................................: 100   min=100        max=100
+
+    NETWORK
+    data_received...........................................................: 29 MB 976 kB/s
+    data_sent...............................................................: 37 MB 1.2 MB/s
+
+
+
+
+running (0m30.0s), 000/100 VUs, 60424 complete and 0 interrupted iterations
+steady ✓ [ 100% ] 100 VUs  30s

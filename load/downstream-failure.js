@@ -1,16 +1,24 @@
-// Breaker behaviour while service-b is failed and then restored.
-// k6 itself injects the fault and stamps the events, so request times and fault times
-// come from one clock (the host and the Docker VM clocks can differ by many ms).
-// Per-request data is read from k6's JSON output by scripts/analyze-failure.mjs.
+// Breaker behaviour while service-b is failed and then restored at a configured delay.
+//
+// k6 injects the fault and the restore itself. The mock service replies with the instant it
+// switched mode (`changedAtMs`); that is recorded as the authoritative fault/restore
+// timestamp. k6 and the services run in one Docker VM, so they share a clock, unlike the host.
+// Each request is classified by outcome so a genuine success (`ok`) can be told apart from a
+// request the open circuit rejected (`circuit_open`), which never counts as recovery.
+// Per-request data is analysed by scripts/lib/failure-analysis.mjs.
 import http from 'k6/http';
-import { Counter } from 'k6/metrics';
+import { Counter, Gauge, Trend } from 'k6/metrics';
 import { sleep } from 'k6';
 
 const gateway = __ENV.GATEWAY || 'http://gateway-1:3000';
 const serviceB = __ENV.SERVICE_B_ADMIN || 'http://service-b:4002';
-const failAfter = Number(__ENV.FAIL_AFTER_S || 10);
-const failFor = Number(__ENV.FAIL_FOR_S || 15);
-const chaosEvent = new Counter('chaos_event');
+const failAfterS = Number(__ENV.FAIL_AFTER_S || 10);
+const failForMs = Number(__ENV.FAIL_FOR_MS || 15000); // restore this long after the fault
+
+const chaosEvent = new Counter('chaos_event'); // k6-clock stamps around each admin call
+const faultAt = new Gauge('fault_at_ms'); // value = service-reported epoch ms
+const restoreAt = new Gauge('restore_at_ms'); // value = service-reported epoch ms
+const reqMs = new Trend('req_ms', true); // tagged with outcome and status
 
 export const options = {
   scenarios: {
@@ -29,21 +37,34 @@ export const options = {
 };
 
 export function traffic() {
-  http.get(`${gateway}/api/v1/service-b/ping`, {
+  const res = http.get(`${gateway}/api/v1/service-b/ping`, {
     headers: { Authorization: `Bearer ${__ENV.TOKEN}` },
   });
+  let outcome = 'other';
+  if (res.status === 200) outcome = 'ok';
+  else if (res.status === 500) outcome = 'upstream_500';
+  else if (res.status === 503) {
+    try {
+      if (res.json('error.code') === 'CIRCUIT_OPEN') outcome = 'circuit_open';
+    } catch (_) {
+      // not JSON: leave as "other"
+    }
+  }
+  reqMs.add(res.timings.duration, { outcome, status: String(res.status) });
 }
 
-const setMode = (mode) =>
-  http.post(`${serviceB}/admin/mode`, JSON.stringify({ mode }), {
+function setMode(mode, name) {
+  chaosEvent.add(1, { event: `${name}_sent` });
+  const res = http.post(`${serviceB}/admin/mode`, JSON.stringify({ mode }), {
     headers: { 'Content-Type': 'application/json' },
   });
+  chaosEvent.add(1, { event: `${name}_ack` });
+  return res.json('changedAtMs');
+}
 
 export function chaos() {
-  sleep(failAfter);
-  setMode('fail');
-  chaosEvent.add(1, { event: 'fail' });
-  sleep(failFor);
-  setMode('ok');
-  chaosEvent.add(1, { event: 'restore' });
+  sleep(failAfterS);
+  faultAt.add(setMode('fail', 'fail'), { event: 'fail' });
+  sleep(failForMs / 1000);
+  restoreAt.add(setMode('ok', 'restore'), { event: 'restore' });
 }

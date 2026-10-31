@@ -1,0 +1,3 @@
+=== Baseline: healthy upstream, quota not limiting (5 trials, 10s warm-up + 30s measured)
+=== Downstream failure and recovery (5 trials, cooldown 3000ms, seed 20261101)
+restore delays (ms after fault): 16137 17694 16651 17051 15404

@@ -1,0 +1,256 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+     execution: local
+        script: /work/load/baseline.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 100 max VUs, 1m10s max duration (incl. graceful stop):
+              * steady: 100 looping VUs for 40s (gracefulStop: 30s)
+
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=502ms waiting=502ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=509ms waiting=509ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=537ms waiting=536ms connecting=1ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=544ms waiting=544ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=565ms waiting=565ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=588ms waiting=587ms connecting=55ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=611ms waiting=611ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=622ms waiting=622ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=652ms waiting=652ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=657ms waiting=657ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=671ms waiting=671ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=699ms waiting=698ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=705ms waiting=705ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=724ms waiting=724ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=743ms waiting=743ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=764ms waiting=763ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=780ms waiting=780ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=811ms waiting=811ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=825ms waiting=825ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=845ms waiting=844ms connecting=0ms t=0.1s" source=console
+
+running (0m01.0s), 100/100 VUs, 1290 complete and 0 interrupted iterations
+steady   [   2% ] 100 VUs  01.0s/40s
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=870ms waiting=869ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=874ms waiting=874ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=911ms waiting=911ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=917ms waiting=917ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=932ms waiting=932ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=952ms waiting=952ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=977ms waiting=977ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1000ms waiting=1000ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1027ms waiting=1026ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1035ms waiting=1034ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1078ms waiting=1078ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1125ms waiting=1125ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1143ms waiting=1143ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1171ms waiting=1171ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1187ms waiting=1187ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1206ms waiting=1206ms connecting=0ms t=0.1s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1219ms waiting=1219ms connecting=1ms t=0.2s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1240ms waiting=1240ms connecting=1ms t=0.2s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1249ms waiting=1248ms connecting=1ms t=0.2s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1278ms waiting=1278ms connecting=0ms t=0.2s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1283ms waiting=1283ms connecting=0ms t=0.2s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1314ms waiting=1314ms connecting=0ms t=0.2s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1320ms waiting=1320ms connecting=0ms t=0.2s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1345ms waiting=1345ms connecting=0ms t=0.2s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1367ms waiting=1366ms connecting=0ms t=0.2s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1381ms waiting=1381ms connecting=0ms t=0.2s" source=console
+time="2026-10-31T18:03:43Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1389ms waiting=1389ms connecting=0ms t=0.2s" source=console
+time="2026-10-31T18:03:44Z" level=info msg="SLOW phase=warmup gw=gateway-2 total=1413ms waiting=1413ms connecting=0ms t=0.2s" source=console
+
+running (0m02.0s), 100/100 VUs, 3248 complete and 0 interrupted iterations
+steady   [   5% ] 100 VUs  02.0s/40s
+
+running (0m03.0s), 100/100 VUs, 5481 complete and 0 interrupted iterations
+steady   [   7% ] 100 VUs  03.0s/40s
+
+running (0m04.0s), 100/100 VUs, 7362 complete and 0 interrupted iterations
+steady   [  10% ] 100 VUs  04.0s/40s
+
+running (0m05.0s), 100/100 VUs, 9494 complete and 0 interrupted iterations
+steady   [  12% ] 100 VUs  05.0s/40s
+
+running (0m06.0s), 100/100 VUs, 11880 complete and 0 interrupted iterations
+steady   [  15% ] 100 VUs  06.0s/40s
+
+running (0m07.0s), 100/100 VUs, 14326 complete and 0 interrupted iterations
+steady   [  17% ] 100 VUs  07.0s/40s
+
+running (0m08.0s), 100/100 VUs, 16262 complete and 0 interrupted iterations
+steady   [  20% ] 100 VUs  08.0s/40s
+
+running (0m09.0s), 100/100 VUs, 18510 complete and 0 interrupted iterations
+steady   [  22% ] 100 VUs  09.0s/40s
+
+running (0m10.0s), 100/100 VUs, 20783 complete and 0 interrupted iterations
+steady   [  25% ] 100 VUs  10.0s/40s
+
+running (0m11.0s), 100/100 VUs, 23385 complete and 0 interrupted iterations
+steady   [  27% ] 100 VUs  11.0s/40s
+
+running (0m12.0s), 100/100 VUs, 25492 complete and 0 interrupted iterations
+steady   [  30% ] 100 VUs  12.0s/40s
+
+running (0m13.0s), 100/100 VUs, 27957 complete and 0 interrupted iterations
+steady   [  32% ] 100 VUs  13.0s/40s
+
+running (0m14.0s), 100/100 VUs, 30608 complete and 0 interrupted iterations
+steady   [  35% ] 100 VUs  14.0s/40s
+
+running (0m15.0s), 100/100 VUs, 33231 complete and 0 interrupted iterations
+steady   [  37% ] 100 VUs  15.0s/40s
+
+running (0m16.0s), 100/100 VUs, 35736 complete and 0 interrupted iterations
+steady   [  40% ] 100 VUs  16.0s/40s
+
+running (0m17.0s), 100/100 VUs, 38298 complete and 0 interrupted iterations
+steady   [  42% ] 100 VUs  17.0s/40s
+
+running (0m18.0s), 100/100 VUs, 40207 complete and 0 interrupted iterations
+steady   [  45% ] 100 VUs  18.0s/40s
+
+running (0m19.0s), 100/100 VUs, 42581 complete and 0 interrupted iterations
+steady   [  47% ] 100 VUs  19.0s/40s
+
+running (0m20.0s), 100/100 VUs, 45180 complete and 0 interrupted iterations
+steady   [  50% ] 100 VUs  20.0s/40s
+
+running (0m21.0s), 100/100 VUs, 47908 complete and 0 interrupted iterations
+steady   [  52% ] 100 VUs  21.0s/40s
+
+running (0m22.0s), 100/100 VUs, 50622 complete and 0 interrupted iterations
+steady   [  55% ] 100 VUs  22.0s/40s
+
+running (0m23.0s), 100/100 VUs, 53175 complete and 0 interrupted iterations
+steady   [  57% ] 100 VUs  23.0s/40s
+
+running (0m24.0s), 100/100 VUs, 55847 complete and 0 interrupted iterations
+steady   [  60% ] 100 VUs  24.0s/40s
+
+running (0m25.0s), 100/100 VUs, 57676 complete and 0 interrupted iterations
+steady   [  62% ] 100 VUs  25.0s/40s
+
+running (0m26.0s), 100/100 VUs, 59359 complete and 0 interrupted iterations
+steady   [  65% ] 100 VUs  26.0s/40s
+
+running (0m27.0s), 100/100 VUs, 61345 complete and 0 interrupted iterations
+steady   [  67% ] 100 VUs  27.0s/40s
+
+running (0m28.0s), 100/100 VUs, 63789 complete and 0 interrupted iterations
+steady   [  70% ] 100 VUs  28.0s/40s
+
+running (0m29.0s), 100/100 VUs, 66357 complete and 0 interrupted iterations
+steady   [  72% ] 100 VUs  29.0s/40s
+
+running (0m30.0s), 100/100 VUs, 68933 complete and 0 interrupted iterations
+steady   [  75% ] 100 VUs  30.0s/40s
+
+running (0m31.0s), 100/100 VUs, 71193 complete and 0 interrupted iterations
+steady   [  77% ] 100 VUs  31.0s/40s
+
+running (0m32.0s), 100/100 VUs, 73515 complete and 0 interrupted iterations
+steady   [  80% ] 100 VUs  32.0s/40s
+
+running (0m33.0s), 100/100 VUs, 75812 complete and 0 interrupted iterations
+steady   [  82% ] 100 VUs  33.0s/40s
+
+running (0m34.0s), 100/100 VUs, 78469 complete and 0 interrupted iterations
+steady   [  85% ] 100 VUs  34.0s/40s
+
+running (0m35.0s), 100/100 VUs, 80541 complete and 0 interrupted iterations
+steady   [  87% ] 100 VUs  35.0s/40s
+
+running (0m36.0s), 100/100 VUs, 82804 complete and 0 interrupted iterations
+steady   [  90% ] 100 VUs  36.0s/40s
+
+running (0m37.0s), 100/100 VUs, 85043 complete and 0 interrupted iterations
+steady   [  92% ] 100 VUs  37.0s/40s
+
+running (0m38.0s), 100/100 VUs, 87381 complete and 0 interrupted iterations
+steady   [  95% ] 100 VUs  38.0s/40s
+
+running (0m39.0s), 100/100 VUs, 89321 complete and 0 interrupted iterations
+steady   [  97% ] 100 VUs  39.0s/40s
+
+running (0m40.0s), 100/100 VUs, 90988 complete and 0 interrupted iterations
+steady   [ 100% ] 100 VUs  40.0s/40s
+
+
+  █ THRESHOLDS 
+
+    http_req_duration{phase:measured,gw:gateway-1}
+    ✓ 'max>=0' max=65.81ms
+
+    http_req_duration{phase:measured,gw:gateway-2}
+    ✓ 'max>=0' max=140.64ms
+
+    http_req_duration{phase:measured}
+    ✓ 'max>=0' max=140.64ms
+
+    http_req_duration{phase:warmup,gw:gateway-1}
+    ✓ 'max>=0' max=122.63ms
+
+    http_req_duration{phase:warmup,gw:gateway-2}
+    ✓ 'max>=0' max=1.41s
+
+    http_req_duration{phase:warmup}
+    ✓ 'max>=0' max=1.41s
+
+    http_req_failed{phase:measured}
+    ✓ 'rate>=0' rate=0.00%
+
+    http_req_failed{phase:warmup}
+    ✓ 'rate>=0' rate=0.00%
+
+    http_reqs{phase:measured}
+    ✓ 'count>=0' count=70211
+
+    http_reqs{phase:warmup}
+    ✓ 'count>=0' count=20922
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......................: 91133   2276.363713/s
+    checks_succeeded...................: 100.00% 91133 out of 91133
+    checks_failed......................: 0.00%   0 out of 91133
+
+    ✓ status is 200
+
+    HTTP
+    http_req_duration.................................................................: avg=43.69ms min=1.71ms  med=44.06ms p(90)=77.31ms p(95)=86.87ms  p(99)=108.37ms max=1.41s   
+      { expected_response:true }......................................................: avg=43.69ms min=1.71ms  med=44.06ms p(90)=77.31ms p(95)=86.87ms  p(99)=108.37ms max=1.41s   
+      { phase:measured,gw:gateway-1 }.................................................: avg=20.87ms min=1.89ms  med=19.44ms p(90)=32.66ms p(95)=38.16ms  p(99)=47.82ms  max=65.81ms 
+      { phase:measured,gw:gateway-2 }.................................................: avg=64.22ms min=30.27ms med=61.45ms p(90)=83.61ms p(95)=94.13ms  p(99)=114.26ms max=140.64ms
+      { phase:measured }..............................................................: avg=42.54ms min=1.89ms  med=43.4ms  p(90)=73.2ms  p(95)=83.61ms  p(99)=105.31ms max=140.64ms
+      { phase:warmup,gw:gateway-1 }...................................................: avg=16.53ms min=1.71ms  med=14.44ms p(90)=26.64ms p(95)=33.46ms  p(99)=73.65ms  max=122.63ms
+      { phase:warmup,gw:gateway-2 }...................................................: avg=78.6ms  min=27.48ms med=72.2ms  p(90)=92.32ms p(95)=102.98ms p(99)=138.44ms max=1.41s   
+      { phase:warmup }................................................................: avg=47.55ms min=1.71ms  med=51.83ms p(90)=84.43ms p(95)=92.69ms  p(99)=118.24ms max=1.41s   
+    http_req_failed...................................................................: 0.00% 0 out of 91133
+      { phase:measured }..............................................................: 0.00% 0 out of 70211
+      { phase:warmup }................................................................: 0.00% 0 out of 20922
+    http_reqs.........................................................................: 91133 2276.363713/s
+      { phase:measured }..............................................................: 70211 1753.763979/s
+      { phase:warmup }................................................................: 20922 522.599735/s
+
+    EXECUTION
+    iteration_duration................................................................: avg=43.9ms  min=1.84ms  med=44.21ms p(90)=77.53ms p(95)=87.13ms  p(99)=109.34ms max=1.41s   
+    iterations........................................................................: 91133 2276.363713/s
+    vus...............................................................................: 100   min=100        max=100
+    vus_max...........................................................................: 100   min=100        max=100
+
+    NETWORK
+    data_received.....................................................................: 44 MB 1.1 MB/s
+    data_sent.........................................................................: 56 MB 1.4 MB/s
+
+
+
+
+running (0m40.0s), 000/100 VUs, 91133 complete and 0 interrupted iterations
+steady ✓ [ 100% ] 100 VUs  40s

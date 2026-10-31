@@ -19,6 +19,7 @@ export interface AppOptions {
   logLevel?: string;
   readinessChecks?: ReadinessCheck[];
   rateLimiter?: RateLimiter;
+  ipRateLimiter?: RateLimiter;
 }
 
 export async function buildApp(
@@ -29,6 +30,8 @@ export async function buildApp(
     bodyLimit: config.bodyLimitBytes,
     // Always mint our own id: a client-chosen id could forge or collide in logs.
     genReqId: () => randomUUID(),
+    // The per-IP limiter keys on request.ip, so this decides whether X-Forwarded-For counts.
+    trustProxy: config.trustProxy ?? false,
     requestIdHeader: false,
     logger: {
       level: opts.logLevel ?? process.env['LOG_LEVEL'] ?? 'info',
@@ -52,6 +55,7 @@ export async function buildApp(
   metrics.describe('gateway_upstream_timeouts_total', 'Upstream calls that timed out');
   metrics.describe('gateway_breaker_transitions_total', 'Circuit breaker state transitions');
   metrics.describe('gateway_rate_limit_rejections_total', 'Requests rejected with 429');
+  metrics.describe('gateway_ip_rate_limit_rejections_total', 'Requests rejected by the per-IP limit');
   metrics.describe('gateway_rate_limiter_errors_total', 'Rate limiter failures by outage policy');
   metrics.describe('gateway_circuit_open_rejections_total', 'Requests failed fast by an open breaker');
 
@@ -115,6 +119,7 @@ export async function buildApp(
       breaker: config.breaker,
       rateLimit: config.rateLimit,
       rateLimiter: opts.rateLimiter,
+      ipRateLimiter: opts.ipRateLimiter,
     });
   }
 

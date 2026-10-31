@@ -40,6 +40,10 @@ export interface GatewayConfig {
   redisUrl: string;
   /** If set, `/metrics` requires `Authorization: Bearer <token>`. */
   metricsToken?: string;
+  /** Per-client-IP limit, applied before authentication. Absent = disabled. */
+  ipRateLimit?: { capacity: number; refillPerSec: number };
+  /** Fastify `trustProxy`: false (default) or a comma-separated list of proxy IPs/CIDRs. */
+  trustProxy?: boolean | string;
 }
 
 type Env = Record<string, string | undefined>;
@@ -101,7 +105,39 @@ export function loadConfig(env: Env = process.env): GatewayConfig {
     },
     redisUrl: env['REDIS_URL'] ?? 'redis://127.0.0.1:6379',
     ...metricsToken(env),
+    ...ipRateLimit(env),
+    ...trustProxy(env),
   };
+}
+
+/** Both variables or neither: a half-configured limiter is a mistake, not a default. */
+function ipRateLimit(env: Env): { ipRateLimit?: { capacity: number; refillPerSec: number } } {
+  const cap = env['IP_RATE_LIMIT_CAPACITY'];
+  const refill = env['IP_RATE_LIMIT_REFILL_PER_SEC'];
+  if (!cap && !refill) return {};
+  if (!cap || !refill) {
+    throw new Error('IP_RATE_LIMIT_CAPACITY and IP_RATE_LIMIT_REFILL_PER_SEC must be set together');
+  }
+  return {
+    ipRateLimit: {
+      capacity: int(env, 'IP_RATE_LIMIT_CAPACITY', 0, 1),
+      refillPerSec: positiveNumber(env, 'IP_RATE_LIMIT_REFILL_PER_SEC', 0),
+    },
+  };
+}
+
+/**
+ * Behind a reverse proxy the client IP comes from X-Forwarded-For. `true` (trust every
+ * hop) is refused because clients could then pick their own IP; list the proxies instead.
+ */
+function trustProxy(env: Env): { trustProxy?: string } {
+  const v = env['TRUST_PROXY']?.trim();
+  if (!v || v === 'false') return {};
+  if (v === 'true') throw new Error('TRUST_PROXY=true is unsafe: list the proxy IPs or CIDRs');
+  if (!v.split(',').every((p) => /^[0-9a-fA-F:.]+(\/\d{1,3})?$/.test(p.trim()))) {
+    throw new Error('TRUST_PROXY must be a comma-separated list of proxy IPs or CIDRs');
+  }
+  return { trustProxy: v };
 }
 
 function metricsToken(env: Env): { metricsToken?: string } {

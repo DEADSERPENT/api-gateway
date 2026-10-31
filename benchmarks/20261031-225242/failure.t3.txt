@@ -1,0 +1,204 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+     execution: local
+        script: /work/load/downstream-failure.js
+        output: json (/work/benchmarks/20261031-225242/failure.t3.ndjson)
+
+     scenarios: (100.00%) 2 scenarios, 101 max VUs, 10m30s max duration (incl. graceful stop):
+              * chaos: 1 iterations for each of 1 VUs (maxDuration: 10m0s, exec: chaos, gracefulStop: 30s)
+              * traffic: 20.00 iterations/s for 40s (maxVUs: 20-100, exec: traffic, gracefulStop: 30s)
+
+
+running (00m01.0s), 001/021 VUs, 20 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m01.0s/10m0s  0/1 iters, 1 per VU
+traffic   [   2% ] 000/020 VUs  01.0s/40s       20.00 iters/s
+
+running (00m02.0s), 001/021 VUs, 40 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m02.0s/10m0s  0/1 iters, 1 per VU
+traffic   [   5% ] 000/020 VUs  02.0s/40s       20.00 iters/s
+
+running (00m03.0s), 001/021 VUs, 60 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m03.0s/10m0s  0/1 iters, 1 per VU
+traffic   [   7% ] 000/020 VUs  03.0s/40s       20.00 iters/s
+
+running (00m04.0s), 001/021 VUs, 80 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m04.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  10% ] 000/020 VUs  04.0s/40s       20.00 iters/s
+
+running (00m05.0s), 001/021 VUs, 100 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m05.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  12% ] 000/020 VUs  05.0s/40s       20.00 iters/s
+
+running (00m06.0s), 001/021 VUs, 120 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m06.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  15% ] 000/020 VUs  06.0s/40s       20.00 iters/s
+
+running (00m07.0s), 001/021 VUs, 140 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m07.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  17% ] 000/020 VUs  07.0s/40s       20.00 iters/s
+
+running (00m08.0s), 001/021 VUs, 160 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m08.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  20% ] 000/020 VUs  08.0s/40s       20.00 iters/s
+
+running (00m09.0s), 001/021 VUs, 180 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m09.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  22% ] 000/020 VUs  09.0s/40s       20.00 iters/s
+
+running (00m10.0s), 001/021 VUs, 200 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m10.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  25% ] 000/020 VUs  10.0s/40s       20.00 iters/s
+
+running (00m11.0s), 001/021 VUs, 220 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m11.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  27% ] 000/020 VUs  11.0s/40s       20.00 iters/s
+
+running (00m12.0s), 001/021 VUs, 240 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m12.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  30% ] 000/020 VUs  12.0s/40s       20.00 iters/s
+
+running (00m13.0s), 001/021 VUs, 260 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m13.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  32% ] 000/020 VUs  13.0s/40s       20.00 iters/s
+
+running (00m14.0s), 001/021 VUs, 280 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m14.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  35% ] 000/020 VUs  14.0s/40s       20.00 iters/s
+
+running (00m15.0s), 001/021 VUs, 300 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m15.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  37% ] 000/020 VUs  15.0s/40s       20.00 iters/s
+
+running (00m16.0s), 001/021 VUs, 320 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m16.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  40% ] 000/020 VUs  16.0s/40s       20.00 iters/s
+
+running (00m17.0s), 001/021 VUs, 340 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m17.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  42% ] 000/020 VUs  17.0s/40s       20.00 iters/s
+
+running (00m18.0s), 001/021 VUs, 360 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m18.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  45% ] 000/020 VUs  18.0s/40s       20.00 iters/s
+
+running (00m19.0s), 001/021 VUs, 380 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m19.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  47% ] 000/020 VUs  19.0s/40s       20.00 iters/s
+
+running (00m20.0s), 001/021 VUs, 400 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m20.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  50% ] 000/020 VUs  20.0s/40s       20.00 iters/s
+
+running (00m21.0s), 001/021 VUs, 420 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m21.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  52% ] 000/020 VUs  21.0s/40s       20.00 iters/s
+
+running (00m22.0s), 001/021 VUs, 440 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m22.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  55% ] 000/020 VUs  22.0s/40s       20.00 iters/s
+
+running (00m23.0s), 001/021 VUs, 460 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m23.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  57% ] 000/020 VUs  23.0s/40s       20.00 iters/s
+
+running (00m24.0s), 001/021 VUs, 480 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m24.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  60% ] 000/020 VUs  24.0s/40s       20.00 iters/s
+
+running (00m25.0s), 001/021 VUs, 500 complete and 0 interrupted iterations
+chaos     [   0% ] 1 VUs        00m25.0s/10m0s  0/1 iters, 1 per VU
+traffic   [  62% ] 000/020 VUs  25.0s/40s       20.00 iters/s
+
+running (00m26.0s), 000/021 VUs, 521 complete and 0 interrupted iterations
+chaos   ✓ [ 100% ] 1 VUs        00m25.0s/10m0s  1/1 iters, 1 per VU
+traffic   [  65% ] 000/020 VUs  26.0s/40s       20.00 iters/s
+
+running (00m27.0s), 000/021 VUs, 541 complete and 0 interrupted iterations
+chaos   ✓ [ 100% ] 1 VUs        00m25.0s/10m0s  1/1 iters, 1 per VU
+traffic   [  67% ] 000/020 VUs  27.0s/40s       20.00 iters/s
+
+running (00m28.0s), 000/021 VUs, 561 complete and 0 interrupted iterations
+chaos   ✓ [ 100% ] 1 VUs        00m25.0s/10m0s  1/1 iters, 1 per VU
+traffic   [  70% ] 000/020 VUs  28.0s/40s       20.00 iters/s
+
+running (00m29.0s), 000/021 VUs, 581 complete and 0 interrupted iterations
+chaos   ✓ [ 100% ] 1 VUs        00m25.0s/10m0s  1/1 iters, 1 per VU
+traffic   [  72% ] 000/020 VUs  29.0s/40s       20.00 iters/s
+
+running (00m30.0s), 000/021 VUs, 601 complete and 0 interrupted iterations
+chaos   ✓ [ 100% ] 1 VUs        00m25.0s/10m0s  1/1 iters, 1 per VU
+traffic   [  75% ] 000/020 VUs  30.0s/40s       20.00 iters/s
+
+running (00m31.0s), 000/021 VUs, 621 complete and 0 interrupted iterations
+chaos   ✓ [ 100% ] 1 VUs        00m25.0s/10m0s  1/1 iters, 1 per VU
+traffic   [  77% ] 000/020 VUs  31.0s/40s       20.00 iters/s
+
+running (00m32.0s), 000/021 VUs, 641 complete and 0 interrupted iterations
+chaos   ✓ [ 100% ] 1 VUs        00m25.0s/10m0s  1/1 iters, 1 per VU
+traffic   [  80% ] 000/020 VUs  32.0s/40s       20.00 iters/s
+
+running (00m33.0s), 000/021 VUs, 661 complete and 0 interrupted iterations
+chaos   ✓ [ 100% ] 1 VUs        00m25.0s/10m0s  1/1 iters, 1 per VU
+traffic   [  82% ] 000/020 VUs  33.0s/40s       20.00 iters/s
+
+running (00m34.0s), 000/021 VUs, 681 complete and 0 interrupted iterations
+chaos   ✓ [ 100% ] 1 VUs        00m25.0s/10m0s  1/1 iters, 1 per VU
+traffic   [  85% ] 000/020 VUs  34.0s/40s       20.00 iters/s
+
+running (00m35.0s), 000/021 VUs, 701 complete and 0 interrupted iterations
+chaos   ✓ [ 100% ] 1 VUs        00m25.0s/10m0s  1/1 iters, 1 per VU
+traffic   [  87% ] 000/020 VUs  35.0s/40s       20.00 iters/s
+
+running (00m36.0s), 000/021 VUs, 721 complete and 0 interrupted iterations
+chaos   ✓ [ 100% ] 1 VUs        00m25.0s/10m0s  1/1 iters, 1 per VU
+traffic   [  90% ] 000/020 VUs  36.0s/40s       20.00 iters/s
+
+running (00m37.0s), 000/021 VUs, 741 complete and 0 interrupted iterations
+chaos   ✓ [ 100% ] 1 VUs        00m25.0s/10m0s  1/1 iters, 1 per VU
+traffic   [  92% ] 000/020 VUs  37.0s/40s       20.00 iters/s
+
+running (00m38.0s), 000/021 VUs, 761 complete and 0 interrupted iterations
+chaos   ✓ [ 100% ] 1 VUs        00m25.0s/10m0s  1/1 iters, 1 per VU
+traffic   [  95% ] 000/020 VUs  38.0s/40s       20.00 iters/s
+
+running (00m39.0s), 000/021 VUs, 781 complete and 0 interrupted iterations
+chaos   ✓ [ 100% ] 1 VUs        00m25.0s/10m0s  1/1 iters, 1 per VU
+traffic   [  97% ] 000/020 VUs  39.0s/40s       20.00 iters/s
+
+running (00m40.0s), 000/021 VUs, 801 complete and 0 interrupted iterations
+chaos   ✓ [ 100% ] 1 VUs        00m25.0s/10m0s  1/1 iters, 1 per VU
+traffic   [ 100% ] 000/020 VUs  40.0s/40s       20.00 iters/s
+
+
+  █ TOTAL RESULTS 
+
+    CUSTOM
+    chaos_event.............................................................: 2      0.049998/s
+
+    HTTP
+    http_req_duration.......................................................: avg=2.28ms  med=2.4ms  p(95)=2.9ms  p(99)=3.18ms max=5.87ms
+      { expected_response:true }............................................: avg=2.57ms  med=2.54ms p(95)=2.97ms p(99)=3.5ms  max=5.87ms
+    http_req_failed.........................................................: 37.98% 305 out of 803
+    http_reqs...............................................................: 803    20.074346/s
+
+    EXECUTION
+    iteration_duration......................................................: avg=33.63ms med=2.57ms p(95)=3.14ms p(99)=3.56ms max=25s   
+    iterations..............................................................: 802    20.049346/s
+    vus.....................................................................: 0      min=0          max=1 
+    vus_max.................................................................: 21     min=21         max=21
+
+    NETWORK
+    data_received...........................................................: 380 kB 9.5 kB/s
+    data_sent...............................................................: 489 kB 12 kB/s
+
+
+
+
+running (00m40.0s), 000/021 VUs, 802 complete and 0 interrupted iterations
+chaos   ✓ [ 100% ] 1 VUs        00m25.0s/10m0s  1/1 iters, 1 per VU
+traffic ✓ [ 100% ] 000/020 VUs  40s             20.00 iters/s

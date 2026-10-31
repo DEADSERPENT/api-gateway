@@ -1,0 +1,53 @@
+{
+  "seed": 20261101,
+  "trial": 5,
+  "plan": {
+    "planned_restore_delay_ms": 15404,
+    "cooldown_ms": 3000,
+    "arrival_interval_ms": 50
+  },
+  "timestamps": {
+    "fault_at_ms": 1793470048463,
+    "restore_at_ms": 1793470063868,
+    "actual_restore_delay_ms": 15405,
+    "restore_delay_error_ms": 1,
+    "restore_within_client_window": true,
+    "first_circuit_open_at_ms": 1793470048714,
+    "first_ok_after_restore_at_ms": 1793470066865
+  },
+  "requests_total": 801,
+  "before_fault": {
+    "n": 200,
+    "ok_pct": 100
+  },
+  "during_failure": {
+    "n": 309,
+    "upstream_500": 10,
+    "circuit_open": 299,
+    "other": 0,
+    "open_circuit_latency_ms": {
+      "p50": 1.71,
+      "p95": 2.19,
+      "p99": 2.47
+    }
+  },
+  "time_to_open_ms": 251,
+  "recovery": {
+    "recovered": true,
+    "recovery_ms": 2997,
+    "circuit_open_rejections_after_restore": 59,
+    "other_before_recovery": 0,
+    "requests_after_recovery": 232,
+    "stayed_recovered": true,
+    "last_failed_probe_at_ms": 1793470063815,
+    "phase_since_last_failed_probe_ms": 53,
+    "predicted_recovery_ms": 2947,
+    "prediction_error_ms": 50
+  },
+  "breaker_transitions": {
+    "OPEN": 6,
+    "HALF_OPEN": 6,
+    "CLOSED": 1
+  },
+  "recovery_confirmed": true
+}

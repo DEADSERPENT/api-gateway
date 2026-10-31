@@ -25,6 +25,7 @@ redis.on('error', (err: Error) => {
 
 const app = await buildApp(config, {
   rateLimiter: new RedisTokenBucket(redis, config.rateLimit),
+  ...(config.ipRateLimit ? { ipRateLimiter: new RedisTokenBucket(redis, config.ipRateLimit) } : {}),
   readinessChecks: [async () => (await redis.ping()) === 'PONG'],
 });
 

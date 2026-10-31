@@ -39,6 +39,7 @@ Full stack (Redis, two mock services, two gateway replicas on 127.0.0.1:3001 and
     curl -i -H "Authorization: Bearer $TOKEN" 127.0.0.1:3001/api/v1/service-a/ping
 
 Compose quota defaults to 10, refilling 1/s. Without Docker: `npm run build && npm start`.
+Live demo for screen recording: `bash scripts/demo.sh` (pauses at each step).
 
 ## API
 
@@ -89,8 +90,8 @@ Environment variables, validated at startup (`.env.example` lists them all).
 - **Breaker.** Opens after N qualifying failures in a rolling window, then admits limited probes
   after the cooldown. Connection errors, timeouts and upstream 500/502/503/504 count; 4xx
   never do. Abandoned requests release their probe permit; stale results are ignored.
-- **Auth before limiting.** Only RS256 is accepted (blocks `alg=none`, HS256 confusion), so quota
-  keys come from verified identities; invalid-token floods get `401` but are not throttled.
+- **Two limits.** An optional per-IP limit (`IP_RATE_LIMIT_*`, off by default) runs before the JWT
+  and stops forged-token floods with `429`; the per-user limit runs after it, on verified identities.
 - **Logs** omit query strings and redact credentials; a test found `@fastify/reply-from`
   logging `?access_token=...`, now redacted.
 
@@ -107,19 +108,18 @@ pinned to major versions, not SHAs.
 
 ## Benchmarks
 
-`bash scripts/bench.sh` runs k6 in Docker ([`benchmarks/README.md`](benchmarks/README.md)).
-Each figure is **one run on one laptop**, with k6, Redis, mocks and gateways sharing it:
+`bash scripts/bench.sh` runs k6 in Docker, 5 trials each, with a 10 s warm-up before each 30 s
+measured window ([`benchmarks/README.md`](benchmarks/README.md)). One laptop, everything shared:
 
-- **Rate-limit accuracy** (capacity 100, 10/s, 100 req/s for 20 s; max possible 300): one
-  gateway admitted 299, two gateways admitted 300.
-- **Service down for 15 s at 20 req/s:** breaker open in 249 ms, fast-503 p99 4.1 ms, first
-  success 395 ms after restore (one sample, bounded by the cooldown).
-- **Baseline, 100 VUs:** 1,670 req/s with one gateway, 1,923 with two. This is not evidence of
-  scaling. A run corrupted by a host stall is kept and labelled invalid.
+- **Rate-limit accuracy** (cap 100, 10/s, 100 req/s, 20 s; max 300): 299-300 admitted in all 10 trials.
+- **Service down, restored at random points in the probe cycle:** breaker open in 251 ms, fast
+  rejections p99 2.7 ms, recovery 0.66-3.0 s (median 1.75 s), 5 of 5 confirmed.
+- **Baseline, 100 VUs:** 1,922 req/s (1844-2033) with one gateway, 2,371 (2102-2536) with two,
+  no request over 500 ms once warm. Two gateways did not double throughput; not a scaling claim.
 
 ## Limitations
 
 - Breaker state is per replica; one Redis node only (failover and Cluster untested). No
-  IP-based or per-route limits, roles/`403`, key rotation, TLS termination or retries.
+  per-route limits, roles/`403`, key rotation, TLS or retries; the IP limit needs `TRUST_PROXY` behind a proxy.
 - `/health/*` (and `/metrics` without a token) are unauthenticated: keep them internal.
-- Benchmarks use mock upstreams, one run each, no CPU/memory; no image scanning.
+- Benchmarks use mock upstreams, 5 trials each, no warm-up phase; no image scanning.

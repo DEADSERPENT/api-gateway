@@ -1,101 +1,65 @@
-# Benchmark report
+# Benchmarks
 
-Reproduce: `docker compose up -d` is handled by the script; run `bash scripts/bench.sh`
-(`ONLY=baseline|ratelimit|failure` runs one experiment). Raw k6 output, summaries and the
-environment description are stored per run in `benchmarks/<timestamp>/`.
+Latest run: **`20261031-232346`** (5 trials per scenario). Full tables, CPU/memory and per-trial
+data are in its `RESULTS.md`. Cells below are median (min-max).
 
-## Environment (run `20261031-213804`, except where noted)
+    bash scripts/bench.sh                         # everything, 5 trials
+    ONLY=baseline,failure TRIALS=5 bash scripts/bench.sh
 
-| | |
-|---|---|
-| Host | AMD Ryzen 7 6800HS, 39.2 GB RAM, Windows 11 (10.0.26300) |
-| Docker | Desktop 29.7.2, Linux VM with 16 CPUs / 19.2 GiB |
-| Gateway / mocks | Node v22.23.4 (Fastify 5.12.7), run through `tsx` (not a compiled build) |
-| Redis | 7.4.12 |
-| Load generator | k6 (`grafana/k6:1.0.0`) in a container on the same Docker network |
-| Topology | **Everything shares one machine**: k6, 1-2 gateways, Redis, both mock services |
+## Method
+
+- **Baseline:** each trial runs 10 s of warm-up and then 30 s measured, with the same virtual
+  users and connections throughout. Requests are tagged `warmup` or `measured` as they are sent;
+  every reported figure uses the measured phase only. Warm-up is kept as a separate cold-start
+  record in `RESULTS.md`. Change it with `WARMUP_S` and `MEASURE_S`.
+- **Failure and recovery:** service B is failed, then restored 15-18 s later. The 5 restore delays
+  come from seed `20261101` (one in each fifth of the 3 s probe interval, shuffled), so the run is
+  reproducible and covers different positions in the breaker's probe cycle. The restore time is the
+  instant the mock service itself reports switching back. Recovery is the time from that instant
+  to the first real `200`; an open-circuit `503` never counts. A trial is "confirmed" only if the
+  breaker logged a CLOSED transition and no request failed after the first success.
 
 ## Results
 
-### 1. Proxy baseline (healthy upstream, quota set high enough never to reject)
+| 100 virtual users, 30 s measured | Throughput | p99 | max |
+|---|---:|---:|---:|
+| 1 gateway | 1,922 req/s (1844-2033) | 81 ms | 100 ms (89-124) |
+| 2 gateways | 2,371 req/s (2102-2536) | 104 ms | 141 ms (111-156) |
 
-Closed-loop load, 30 s each, one run each, 0 failed requests in all three.
+No request took over 500 ms in any measured phase (0 of 903,754), and none failed. The 20-VU
+single-gateway run reached 1,708 req/s (1674-1852).
 
-| Setup | Throughput | p50 | p95 | p99 | max |
-|---|---:|---:|---:|---:|---:|
-| 1 gateway, 20 VUs | 1,364 req/s | 13.3 ms | 22.6 ms | 32.3 ms | 188 ms |
-| 1 gateway, 100 VUs | 1,670 req/s | 55.8 ms | 81.1 ms | 102 ms | 644 ms |
-| 2 gateways, 100 VUs | 1,923 req/s | 56.0 ms | 111.6 ms | 141 ms | 2.15 s |
-
-Reading these numbers: with a closed loop, latency at 100 VUs is mostly queueing, so it is
-not comparable with the 20-VU row. Going from 1 to 2 gateways raised throughput only about
-15 % while p95/p99 got worse. The load generator, Redis, the mock services and both
-gateways compete for the same CPUs, so **this does not show horizontal scaling**, and the
-second replica's tail latency (2.15 s max) is unexplained. I did not profile it.
-
-### 2. Rate-limit accuracy (run `20261031-222806`)
-
-One identity, constant 100 req/s for 20 s (2,001 requests), bucket capacity 100, refill
-10 tokens/s. A correct limiter can admit at most `100 + 10 x 20 = 300`.
-
-| Setup | Admitted | Rejected (429) | Other | p95 latency |
-|---|---:|---:|---:|---:|
-| 1 gateway | 299 | 1,702 | 0 | 3.2 ms |
-| 2 gateways, requests alternating | 300 | 1,701 | 0 | 3.0 ms |
-
-Both runs land on the theoretical bound, and the second gateway did not add quota. The
-integration suite adds a tighter check: 500 simultaneous requests on one key admit exactly
-50 (capacity 50), including across two separate Redis connections.
-
-### 3. Downstream failure and recovery (`20261031-213804`)
-
-20 req/s to service-b for 40 s. k6 injects a failure at t = 10 s and restores service-b
-15 s later, and stamps both events itself so all times share one clock. Breaker: 5 failures
-in 10 s opens it, cooldown 3 s, one probe.
-
-| Metric | Result |
+| Circuit breaker (cooldown 3 s, 20 req/s) | Result |
 |---|---|
-| Before failure | 200 requests, 100 % OK |
-| Fault injected -> breaker open | 249 ms |
-| During failure | 301 requests: 292 fast `503 CIRCUIT_OPEN`, 9 upstream `500`s |
-| Open-circuit latency | p50 2.6 ms, p95 3.4 ms, p99 4.1 ms |
-| First `200` after restore | 395 ms |
-| After first `200` | 100 % OK |
+| Fault to breaker open | 251 ms (250-252) |
+| Fast rejection latency while open | p99 2.7 ms |
+| Recovery after the service is restored | **1,749 ms (655-2,997)**, 5 of 5 confirmed |
 
-The 9 upstream 500s are the 5 failures that opened the breaker plus 4 failed half-open
-probes (one per 3 s cooldown over 15 s). **Recovery time is a single sample.** It is
-bounded by the cooldown plus one probe, so it can be anywhere from near 0 to about 3 s
-depending on where the restore lands in the cooldown cycle; 395 ms is one draw, not a typical
-value.
+Recovery depends on where the restore lands in the probe cycle: it equals the time until the
+next probe, `(last failed probe + cooldown) - restore`. The simple model predicted every trial to
+within 50 ms (the request spacing), so recovery is bounded by the cooldown, as expected.
 
-### 4. Redis outage (manual, not part of `bench.sh`)
+Rate-limit accuracy was not re-run: in run `20261031-225242`, 10 of 10 trials admitted 299-300
+requests against a possible 300, with one gateway or two.
 
-Checked once against the real Compose stack by stopping and starting the Redis container:
+## What changed since the previous run (`20261031-225242`)
 
-- `fail-closed`: all requests got `503 RATE_LIMITER_UNAVAILABLE`, `/health/ready` returned
-  503, `/health/live` stayed 200. Both gateways were serving normally about 2 s after Redis
-  came back.
-- `fail-open`: all 25 requests against a quota of 10 were admitted (quota bypassed), each
-  counted in `gateway_rate_limiter_errors_total{policy="open"}`, and readiness reported 503.
-
-No latency or throughput was measured for outages.
-
-## Invalid run (kept, not used)
-
-The first full run's 1-gateway rate-limit scenario reported a duration of 45 min 58 s instead
-of 20 s: the host or Docker VM stalled mid-run. Redis kept refilling the bucket during the
-stall, so it admitted 400 (capacity 100 extra). It is saved as
-`20261031-213804/INVALID-stalled-ratelimit-1gw.*` and was rerun. `bench.sh` now prints a
-warning when a scenario's wall time is far above its scheduled duration.
+- Its 1.4 s-2.5 s maximum latencies were cold-start effects on the less-used gateway. With
+  warm-up excluded, measured maxima are 89-156 ms. The cold-start spikes still appear in the
+  warm-up record (up to 2.3 s in the two-gateway runs), so they are real, not hidden.
+  This is a methodology change, **not a performance improvement**: throughput is the same
+  within run-to-run variation (1,922 vs 2,018 req/s at 100 VUs, overlapping ranges).
+- Its "recovery about 400 ms" was an artifact of always restoring at the same point in the
+  probe cycle. Recovery is really 0.7-3.0 s.
 
 ## Limitations
 
-- One run per configuration; no repetitions, so no confidence intervals or variance.
-- CPU and memory per process were **not** captured, although the SDLC lists them.
-- Laptop, single machine, shared CPUs, Docker Desktop networking; absolute numbers will not
-  transfer to other hardware.
-- The gateway runs through `tsx`, not a compiled build, and a mock upstream does almost no
-  work, so these figures bound the gateway overhead, not a real service.
-- The `/metrics` and rate-limit paths were not load-tested with many distinct identities;
-  all tests above use one identity per scenario.
-- The breaker is per process, so with two gateways each replica opens independently.
+- Everything runs on one laptop in one Docker VM, with unrelated containers also present.
+- Two gateways gave about 23 % more throughput (ranges do not overlap), far below double. This
+  does not show horizontal scaling, and I did not investigate why.
+- Five trials show spread but are too few for confidence intervals.
+- Five restore points sample the probe cycle coarsely; the recovery model is a fit to these
+  points, not a proof.
+- Mock upstreams do almost no work, and the breaker is per process.
+- Older run folders are kept as history: `213804` (contains the stalled run, labelled `INVALID-`),
+  `222806` and `225242` (before warm-up and randomised restore).

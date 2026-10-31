@@ -35,6 +35,7 @@ export async function signToken(
 
 export interface Extras {
   rateLimiter?: RateLimiter;
+  ipRateLimiter?: RateLimiter;
   readinessChecks?: ReadinessCheck[];
 }
 

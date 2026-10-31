@@ -1,0 +1,12 @@
+{
+  "trials": 5,
+  "baseline": { "warmup_s": 10, "measure_s": 30 },
+  "failure": {
+    "seed": 20261101,
+    "rate_rps": 20,
+    "fail_after_s": 10,
+    "restore_delay_min_ms": 15000,
+    "restore_delay_span_ms": 3000,
+    "breaker_cooldown_ms": 3000
+  }
+}

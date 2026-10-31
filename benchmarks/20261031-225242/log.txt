@@ -1,0 +1,3 @@
+=== Baseline: healthy upstream, quota not limiting (5 trials, configurations interleaved)
+=== Rate-limit accuracy: capacity 100, refill 10/s, 100 req/s for 20s (5 trials)
+=== Downstream failure and recovery (breaker cooldown 3s, 5 trials)

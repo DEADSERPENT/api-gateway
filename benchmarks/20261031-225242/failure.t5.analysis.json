@@ -1,0 +1,23 @@
+{
+  "requests_total": 801,
+  "before_failure": {
+    "n": 200,
+    "ok_pct": 100
+  },
+  "during_failure": {
+    "n": 301,
+    "upstream_500_passed_through": 9,
+    "fast_503_circuit_open": 292,
+    "other": 0,
+    "open_circuit_latency_ms": {
+      "p50": "1.65",
+      "p95": "1.95",
+      "p99": "2.23"
+    },
+    "time_to_open_ms": 250
+  },
+  "recovery": {
+    "first_200_after_restore_ms": 299,
+    "ok_pct_after_first_200": 100
+  }
+}

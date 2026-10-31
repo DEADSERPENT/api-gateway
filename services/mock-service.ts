@@ -16,14 +16,19 @@ export function buildMockService(name: string): MockService {
   const app = Fastify({ logger: false });
   let mode: Mode = 'ok';
   let calls = 0;
+  let changedAtMs = Date.now();
 
   app.addContentTypeParser('*', { parseAs: 'string' }, (_req, body, done) => done(null, body));
 
+  // `changedAtMs` is taken in the same synchronous step as the mode switch, so every request
+  // handled afterwards sees the new mode. Benchmarks use it as the authoritative fault and
+  // restore timestamps instead of approximating them from the client's clock.
   app.post<{ Body: { mode: Mode } }>('/admin/mode', async (req) => {
     mode = req.body.mode;
-    return { mode };
+    changedAtMs = Date.now();
+    return { mode, changedAtMs };
   });
-  app.get('/admin/stats', async () => ({ calls, mode }));
+  app.get('/admin/stats', async () => ({ calls, mode, changedAtMs }));
 
   app.addHook('preHandler', async (req, reply) => {
     if (req.url.startsWith('/admin/')) return;

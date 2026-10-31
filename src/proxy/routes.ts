@@ -3,7 +3,7 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { CircuitBreaker } from '../circuit-breaker/breaker.js';
 import type { BreakerConfig, RateLimitConfig, ServiceConfig } from '../config/env.js';
 import type { Metrics } from '../observability/metrics.js';
-import { rateLimitKey } from '../rate-limit/keys.js';
+import { ipKey, rateLimitKey } from '../rate-limit/keys.js';
 import type { RateLimiter } from '../rate-limit/token-bucket.js';
 import { classifyUpstreamError, GatewayError, sendError } from './upstream-errors.js';
 
@@ -21,6 +21,8 @@ export interface ProxyDeps {
   rateLimit: RateLimitConfig;
   /** Absent only in tests that do not exercise limiting. */
   rateLimiter: RateLimiter | undefined;
+  /** Per-IP limiter run before authentication. Absent = disabled. */
+  ipRateLimiter: RateLimiter | undefined;
 }
 
 /** Headers the gateway alone may set; anything a client sends for them is discarded. */
@@ -55,34 +57,57 @@ export function registerServiceProxy(app: FastifyInstance, svc: ServiceConfig, d
       },
     });
 
-    scope.addHook('preHandler', async (request) => {
-      request.authenticatedUser = await deps.authenticate(request);
-    });
-
-    // Runs after authentication (so the identity is verified) and before the breaker
-    // (so throttled requests never consume breaker permits or reach the upstream).
-    scope.addHook('preHandler', async (request, reply) => {
-      const limiter = deps.rateLimiter;
-      if (!limiter) return;
+    // Applies the outage policy when a limiter (Redis) fails: `undefined` means "let the
+    // request through" (fail-open); otherwise the request is refused with 503 (fail-closed).
+    const consume = async (limiter: RateLimiter, key: string, request: FastifyRequest) => {
       const policy = deps.rateLimit.failurePolicy;
-      let result;
       try {
-        result = await limiter.consume(rateLimitKey(svc.name, request.authenticatedUser as string));
+        return await limiter.consume(key);
       } catch (err) {
         metrics.inc('gateway_rate_limiter_errors_total', { policy });
         request.log.error({ err }, 'rate limiter unavailable');
-        if (policy === 'open') return;
+        if (policy === 'open') return undefined;
         throw new GatewayError(503, 'RATE_LIMITER_UNAVAILABLE', 'Service temporarily unavailable', {
           'retry-after': '1',
         });
       }
+    };
+    const retryAfter = (ms: number) => String(Math.max(1, Math.ceil(ms / 1000)));
+
+    // 1. Per-IP limit, BEFORE authentication, so floods of invalid tokens are throttled too.
+    scope.addHook('preHandler', async (request) => {
+      if (!deps.ipRateLimiter) return;
+      const result = await consume(deps.ipRateLimiter, ipKey(request.ip), request);
+      if (result && !result.allowed) {
+        metrics.inc('gateway_ip_rate_limit_rejections_total', { service: svc.name });
+        throw new GatewayError(429, 'IP_RATE_LIMIT_EXCEEDED', 'Too many requests', {
+          'retry-after': retryAfter(result.retryAfterMs),
+        });
+      }
+    });
+
+    // 2. Authentication.
+    scope.addHook('preHandler', async (request) => {
+      request.authenticatedUser = await deps.authenticate(request);
+    });
+
+    // 3. Per-user limit: after authentication (the identity is verified) and before the
+    // breaker (throttled requests never consume breaker permits or reach the upstream).
+    scope.addHook('preHandler', async (request, reply) => {
+      if (!deps.rateLimiter) return;
+      const result = await consume(
+        deps.rateLimiter,
+        rateLimitKey(svc.name, request.authenticatedUser as string),
+        request,
+      );
+      if (!result) return;
       reply.header('ratelimit-limit', String(result.limit));
       reply.header('ratelimit-remaining', String(result.remaining));
       reply.header('ratelimit-reset', String(Math.ceil(result.resetMs / 1000)));
       if (!result.allowed) {
         metrics.inc('gateway_rate_limit_rejections_total', { service: svc.name });
         throw new GatewayError(429, 'RATE_LIMIT_EXCEEDED', 'Too many requests', {
-          'retry-after': String(Math.max(1, Math.ceil(result.retryAfterMs / 1000))),
+          'retry-after': retryAfter(result.retryAfterMs),
         });
       }
     });

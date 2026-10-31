@@ -39,6 +39,9 @@ services:
       RATE_LIMIT_FAIL_POLICY: ${RATE_LIMIT_FAIL_POLICY:-closed}
       UPSTREAM_TIMEOUT_MS: ${UPSTREAM_TIMEOUT_MS:-1000}
       BREAKER_COOLDOWN_MS: ${BREAKER_COOLDOWN_MS:-3000}
+      IP_RATE_LIMIT_CAPACITY: ${IP_RATE_LIMIT_CAPACITY:-}
+      IP_RATE_LIMIT_REFILL_PER_SEC: ${IP_RATE_LIMIT_REFILL_PER_SEC:-}
+      TRUST_PROXY: ${TRUST_PROXY:-}
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health/ready').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"]
       interval: 5s
