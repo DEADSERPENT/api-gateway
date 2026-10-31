@@ -1,0 +1,114 @@
+# Transcript of one unattended run of scripts/demo.sh (AUTO=1)
+# Captured 2026-10-31T18:54:47Z on commit e820be1 + uncommitted edits. Numbers vary slightly per run.
+
+
+== 0. The stack
+   say: Two gateway replicas, Redis, and two mock services, all in Docker. Quota is 20 requests per user per service, refilling slowly.
+$ docker compose ps --format 'table {{.Name}}\t{{.State}}'
+NAME                      STATE
+api-gateway-gateway-1-1   running
+api-gateway-gateway-2-1   running
+api-gateway-redis-1       running
+api-gateway-service-a-1   running
+api-gateway-service-b-1   running
+
+== 1. Health checks
+   say: Liveness only says the process is up. Readiness also checks Redis, and neither exposes any internal detail.
+$ curl -s 127.0.0.1:3001/health/live; echo; curl -s 127.0.0.1:3002/health/ready; echo
+{"status":"ok"}
+{"status":"ready"}
+
+== 2. A valid request
+   say: A signed RS256 token gets routed to service A. The gateway adds a request ID, the verified user, and rate-limit headers. The token itself is never forwarded.
+$ curl -si -H "Authorization: Bearer $T" 127.0.0.1:3001/api/v1/service-a/ping | grep -iE '^HTTP|x-request-id|ratelimit|service|authenticatedUser|receivedAuthorization'
+HTTP/1.1 200 OK
+x-request-id: 90ea73ae-2378-47dc-b512-5ceec2a3fc9d
+ratelimit-limit: 20
+ratelimit-remaining: 19
+ratelimit-reset: 20
+{"service":"service-a","method":"GET","path":"/ping","query":{},"body":null,"requestId":"90ea73ae-2378-47dc-b512-5ceec2a3fc9d","authenticatedUser":"alice-1793472887","receivedAuthorization":false}
+
+== 3. Invalid credentials
+   say: No token, or a forged one, is rejected at the edge with 401 and a generic message. The upstream is never called.
+$ curl -s -w ' [%{http_code}]\n' 127.0.0.1:3001/api/v1/service-a/ping
+{"error":{"code":"UNAUTHENTICATED","message":"Missing or invalid credentials","requestId":"e818dccd-8198-4c38-9543-86fba1958fc0"}} [401]
+$ curl -s -w ' [%{http_code}]\n' -H 'Authorization: Bearer abc.def.ghi' 127.0.0.1:3001/api/v1/service-a/ping
+{"error":{"code":"UNAUTHENTICATED","message":"Missing or invalid credentials","requestId":"b90e3ced-73fd-422f-b7ea-14840466a974"}} [401]
+
+== 4. Rate limiting
+   say: One user sends 24 requests. The first 20 pass, the rest get 429 with a Retry-After header.
+$ codes 127.0.0.1:3001 bob service-a 24
+200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 429 429 429 429 
+$ curl -si -H "Authorization: Bearer $T" 127.0.0.1:3001/api/v1/service-a/ping | grep -iE '^HTTP|retry-after|ratelimit-remaining|code'
+HTTP/1.1 429 Too Many Requests
+ratelimit-remaining: 0
+retry-after: 19
+{"error":{"code":"RATE_LIMIT_EXCEEDED","message":"Too many requests","requestId":"710cfbca-f52a-4c84-92dd-e8e11b119bcf"}}
+
+== 5. One quota shared across two gateways
+   say: Same idea, but the requests alternate between two separate gateway containers. They share one bucket in Redis, so the total is still 20, not 40.
+$ for i in $(seq 1 24); do p=$((3001 + i % 2)); curl -s -o /dev/null -w '%{http_code} ' -H "Authorization: Bearer $T" 127.0.0.1:$p/api/v1/service-a/ping; done; echo
+200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 200 429 429 429 429 
+
+== 6. Redis goes down
+   say: The default policy is fail-closed: with no Redis the gateway refuses traffic rather than skip the quota. Readiness goes red, liveness stays green.
+$ docker compose stop redis >/dev/null 2>&1; sleep 1
+$ curl -s -w ' [%{http_code}]\n' -H "Authorization: Bearer $T" 127.0.0.1:3001/api/v1/service-a/ping
+{"error":{"code":"RATE_LIMITER_UNAVAILABLE","message":"Service temporarily unavailable","requestId":"e80dff0a-ab80-4037-8f42-08d306ce3e09"}} [503]
+$ curl -s -o /dev/null -w 'ready=%{http_code}  ' 127.0.0.1:3001/health/ready; curl -s -o /dev/null -w 'live=%{http_code}\n' 127.0.0.1:3001/health/live
+ready=503  live=200
+   say: Redis comes back and the gateway recovers on its own.
+$ docker compose start redis >/dev/null 2>&1; sleep 4
+$ curl -s -o /dev/null -w 'request after recovery -> %{http_code}\n' -H "Authorization: Bearer $T" 127.0.0.1:3001/api/v1/service-a/ping
+request after recovery -> 200
+
+== 7. Circuit breaker opens
+   say: Service B starts failing. After 5 failures the breaker opens, and the next requests are rejected in milliseconds without touching service B.
+$ for i in $(seq 1 9); do curl -s -o /dev/null -w '%{http_code} in %{time_total}s\n' -H "Authorization: Bearer $T" 127.0.0.1:3001/api/v1/service-b/ping; done
+500 in 0.011936s
+500 in 0.009467s
+500 in 0.009015s
+500 in 0.010671s
+500 in 0.010382s
+503 in 0.007833s
+503 in 0.005813s
+503 in 0.006712s
+503 in 0.007144s
+
+== 8. Recovery
+   say: I restore service B. After the cooldown the breaker lets one probe through, it succeeds, and the circuit closes.
+$ for i in 1 2 3; do curl -s -o /dev/null -w '%{http_code}\n' -H "Authorization: Bearer $T" 127.0.0.1:3001/api/v1/service-b/ping; done
+200
+200
+200
+
+== 9. A flood of forged tokens
+   say: Someone with no login hammers the gateway with fake tokens. The per-IP limit is checked before the token is even verified, so after a burst they are cut off with 429.
+$ for i in $(seq 1 300); do curl -s -o /dev/null -w '%{http_code}\n' -H 'Authorization: Bearer abc.def.ghi' 127.0.0.1:3001/api/v1/service-a/ping; done | sort | uniq -c
+     74 401
+    226 429
+
+== 10. Metrics
+   say: Everything we just did is counted: rejections, breaker transitions, limiter errors.
+$ curl -s 127.0.0.1:3001/metrics | grep -E '^gateway_(rate_limit|ip_rate_limit|breaker|circuit|rate_limiter)' 
+gateway_breaker_transitions_total{service="service-b",to="OPEN"} 1
+gateway_breaker_transitions_total{service="service-b",to="HALF_OPEN"} 1
+gateway_breaker_transitions_total{service="service-b",to="CLOSED"} 1
+gateway_circuit_open_rejections_total{service="service-b"} 4
+gateway_ip_rate_limit_rejections_total{service="service-a"} 226
+gateway_rate_limit_rejections_total{service="service-a"} 7
+gateway_rate_limiter_errors_total{policy="closed"} 1
+
+== 11. Measured results
+   say: The latest benchmark run: five trials each, measured after a warm-up, on one laptop. Throughput and latency first, then recovery time after a failure. These are measurements, not guarantees.
+$ sed -n '/^## Proxy baseline/,/^Measured-phase/p' benchmarks/20261031-232346/RESULTS.md | grep '^|'; grep '^| Recovery after' benchmarks/20261031-232346/RESULTS.md
+| Configuration | n | Throughput (req/s) | p50 (ms) | p95 (ms) | p99 (ms) | max (ms) | failed |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| baseline-1gw-100vu | 5 | 1922 (1844-2033) | 50.3 (46.9-51.4) | 70.3 (59.8-74.4) | 81.4 (66.2-92.3) | 100 (89-124) | 0 |
+| baseline-1gw-20vu | 5 | 1708 (1674-1852) | 10.8 (10.1-11.1) | 16.7 (15.5-18.4) | 21.5 (19.5-26.7) | 41 (39-56) | 0 |
+| baseline-2gw-100vu | 5 | 2371 (2102-2536) | 42.4 (39.4-48.0) | 81.9 (73.8-88.9) | 104.3 (90.7-106.3) | 141 (111-156) | 0 |
+| Recovery after restore (ms) | 1749 (655-2997) |
+
+== Wrap-up
+   say: Auth, a Redis token bucket in one Lua script, circuit breakers and timeouts, tested across real containers. Limits: per-replica breakers, single Redis, mock upstreams.
+Done.

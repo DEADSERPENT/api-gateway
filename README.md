@@ -36,7 +36,7 @@ flowchart TD
 
 ## Quick start
 
-Needs Node 22+ and Docker; the tests need a real Redis (the limiter is a Lua script).
+Needs Node 22+ and Docker; tests need a real Redis. On Windows, run everything in **Git Bash**.
 
     npm install
     docker compose up -d redis
@@ -108,14 +108,14 @@ report). It must sit at the repo root; actions are pinned to major versions, not
 
 ## Benchmarks
 
-`bash scripts/bench.sh` runs k6 in Docker, 5 trials each, with a 10 s warm-up before each 30 s
-measured window ([`benchmarks/README.md`](benchmarks/README.md)). One laptop, everything shared:
+`bash scripts/bench.sh` runs k6 in Docker: 5 trials, 10 s warm-up then 30 s measured. One laptop,
+everything shared, so not general guarantees. Method: [`benchmarks/README.md`](benchmarks/README.md); raw: [`RESULTS.md`](benchmarks/20261031-232346/RESULTS.md).
 
 - **Rate-limit accuracy** (cap 100, 10/s, 100 req/s, 20 s; max 300): 299-300 admitted in all 10 trials.
 - **Service down, restored at random points in the probe cycle:** breaker open in 251 ms, fast
   rejections p99 2.7 ms, recovery 0.66-3.0 s (median 1.75 s), 5 of 5 confirmed.
-- **Baseline, 100 VUs:** 1,922 req/s (1844-2033) with one gateway, 2,371 (2102-2536) with two,
-  no request over 500 ms once warm. Two gateways did not double throughput; not a scaling claim.
+- **Baseline, 100 VUs:** 1,922 req/s (1844-2033) with one gateway, 2,371 (2102-2536) with two; none over
+  500 ms once measured (cold-start spikes kept separate). Two gateways did not double it: no scaling claim.
 
 ## Limitations
 

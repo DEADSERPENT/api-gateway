@@ -1,0 +1,2 @@
+# Shell scripts run in Git Bash and Linux CI: keep LF line endings even on Windows.
+*.sh text eol=lf

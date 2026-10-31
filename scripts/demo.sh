@@ -99,9 +99,9 @@ step "10. Metrics" \
 show "curl -s $GW1/metrics | grep -E '^gateway_(rate_limit|ip_rate_limit|breaker|circuit|rate_limiter)' "
 
 step "11. Measured results" \
-  "The latest benchmark run: five trials each, warm-up excluded, on one laptop. These are measurements, not guarantees."
+  "The latest benchmark run: five trials each, measured after a warm-up, on one laptop. Throughput and latency first, then recovery time after a failure. These are measurements, not guarantees."
 LATEST=$(ls -d benchmarks/2* 2>/dev/null | tail -1)
-[ -n "$LATEST" ] && [ -f "$LATEST/RESULTS.md" ] && show "grep -E '^\| (Configuration|baseline-|Recovery after)' $LATEST/RESULTS.md"
+[ -n "$LATEST" ] && [ -f "$LATEST/RESULTS.md" ] && show "sed -n '/^## Proxy baseline/,/^Measured-phase/p' $LATEST/RESULTS.md | grep '^|'; grep '^| Recovery after' $LATEST/RESULTS.md"
 
 step "Wrap-up" \
   "Auth, a Redis token bucket in one Lua script, circuit breakers and timeouts, tested across real containers. Limits: per-replica breakers, single Redis, mock upstreams."
