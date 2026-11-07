@@ -18,7 +18,7 @@
     "audit": "npm audit --omit=dev --audit-level=moderate && npm audit --audit-level=high"
   },
   "dependencies": {
-    "@fastify/reply-from": "12.8.0",
+    "@fastify/reply-from": "12.8.1",
     "fastify": "5.12.7",
     "ioredis": "6.0.0",
     "jose": "6.2.14"
